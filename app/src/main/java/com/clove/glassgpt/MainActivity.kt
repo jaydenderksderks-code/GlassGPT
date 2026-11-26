@@ -270,7 +270,10 @@ private fun CustomizationScreen(
                     Divider(color=Color.White.copy(.12f))
                     Text("Upload a wallpaper / background image",color=Color.White.copy(.75f),fontSize=12.sp)
                     OutlinedButton(onClick=onWallpaper,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.Image,null);Spacer(Modifier.width(8.dp));Text("Choose image")}
-                    Text(if(wallpaperPath.isBlank()) "No custom wallpaper" else "Wallpaper: "+File(wallpaperPath).name,color=Color.White.copy(.55f),fontSize=11.sp)\n                    OutlinedButton(onClick=onUserAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.AccountCircle,null);Spacer(Modifier.width(8.dp));Text("Upload your avatar")}\n                    Text(if(userAvatarPath.isBlank()) "Default user avatar" else "User avatar: "+File(userAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)\n                    OutlinedButton(onClick=onAssistantAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.SmartToy,null);Spacer(Modifier.width(8.dp));Text("Upload assistant avatar")}\n                    Text(if(assistantAvatarPath.isBlank()) "Default assistant avatar" else "Assistant avatar: "+File(assistantAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
+                    Text(if(wallpaperPath.isBlank()) "No custom wallpaper" else "Wallpaper: "+File(wallpaperPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
+                    OutlinedButton(onClick=onUserAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.AccountCircle,null);Spacer(Modifier.width(8.dp));Text("Upload your avatar")}
+                    Text(if(userAvatarPath.isBlank()) "Default user avatar" else "User avatar: "+File(userAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
+                    OutlinedButton(onClick=onAssistantAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.SmartToy,null);Spacer(Modifier.width(8.dp));Text("Upload assistant avatar")}\n                    Text(if(assistantAvatarPath.isBlank()) "Default assistant avatar" else "Assistant avatar: "+File(assistantAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
                 }
             }
             item {
