@@ -74,6 +74,8 @@ fun GlassGPTApp() {
     var compact by remember { mutableStateOf(p.getBoolean("compact", false)) }
     var showLabels by remember { mutableStateOf(p.getBoolean("labels", true)) }
     var wallpaperPath by remember { mutableStateOf(p.getString("wallpaper", "") ?: "") }
+    var userAvatarPath by remember { mutableStateOf(p.getString("userAvatar", "") ?: "") }
+    var assistantAvatarPath by remember { mutableStateOf(p.getString("assistantAvatar", "") ?: "") }
     var fontPath by remember { mutableStateOf(p.getString("fontPath", "") ?: "") }
     var bubbleStyle by remember { mutableStateOf(p.getString("bubble", "Glass") ?: "Glass") }
     var draft by remember { mutableStateOf("") }
@@ -85,6 +87,12 @@ fun GlassGPTApp() {
 
     val fontPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { saveCopy(context, it, "custom-font.otf")?.let { file -> fontPath=file.absolutePath; p.edit().putString("fontPath",fontPath).apply() } }
+    }
+    val userAvatarPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let { saveCopy(context, it, "user-avatar")?.let { file -> userAvatarPath=file.absolutePath; p.edit().putString("userAvatar",userAvatarPath).apply() } }
+    }
+    val assistantAvatarPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let { saveCopy(context, it, "assistant-avatar")?.let { file -> assistantAvatarPath=file.absolutePath; p.edit().putString("assistantAvatar",assistantAvatarPath).apply() } }
     }
     val wallpaperPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let { saveCopy(context, it, "custom-wallpaper")?.let { file -> wallpaperPath=file.absolutePath; p.edit().putString("wallpaper",wallpaperPath).apply() } }
@@ -116,6 +124,8 @@ fun GlassGPTApp() {
     val customFont = remember(fontPath) {
         runCatching { if (fontPath.isNotBlank()) FontFamily(Font(File(fontPath))) else FontFamily.Default }.getOrDefault(FontFamily.Default)
     }
+    val userAvatar = remember(userAvatarPath) { runCatching { if(userAvatarPath.isNotBlank()) BitmapFactory.decodeFile(userAvatarPath)?.asImageBitmap() else null }.getOrNull() }
+    val assistantAvatar = remember(assistantAvatarPath) { runCatching { if(assistantAvatarPath.isNotBlank()) BitmapFactory.decodeFile(assistantAvatarPath)?.asImageBitmap() else null }.getOrNull() }
     val wallpaper = remember(wallpaperPath) {
         runCatching { if (wallpaperPath.isNotBlank()) BitmapFactory.decodeFile(wallpaperPath)?.asImageBitmap() else null }.getOrNull()
     }
@@ -139,7 +149,8 @@ fun GlassGPTApp() {
                     compact=compact,onCompact={compact=it;p.edit().putBoolean("compact",it).apply()},
                     labels=showLabels,onLabels={showLabels=it;p.edit().putBoolean("labels",it).apply()},
                     bubble=bubbleStyle,onBubble={bubbleStyle=it;p.edit().putString("bubble",it).apply()},
-                    fontPath=fontPath,wallpaperPath=wallpaperPath,
+                    fontPath=fontPath,wallpaperPath=wallpaperPath,userAvatarPath=userAvatarPath,assistantAvatarPath=assistantAvatarPath,
+                    onUserAvatar={userAvatarPicker.launch(arrayOf("image/*"))},onAssistantAvatar={assistantAvatarPicker.launch(arrayOf("image/*"))},
                     onFont={fontPicker.launch(arrayOf("font/ttf","font/otf","application/octet-stream"))},
                     onWallpaper={wallpaperPicker.launch(arrayOf("image/*"))},
                     onImport={importPicker.launch(arrayOf("application/json"))},
@@ -212,7 +223,7 @@ private fun CustomizationScreen(
     corner:Float,onCorner:(Float)->Unit,fontSize:Float,onFontSize:(Float)->Unit,
     compact:Boolean,onCompact:(Boolean)->Unit,labels:Boolean,onLabels:(Boolean)->Unit,
     bubble:String,onBubble:(String)->Unit,fontPath:String,wallpaperPath:String,
-    onFont:()->Unit,onWallpaper:()->Unit,onImport:()->Unit,onExport:()->Unit
+    onFont:()->Unit,onWallpaper:()->Unit,userAvatarPath:String,assistantAvatarPath:String,onUserAvatar:()->Unit,onAssistantAvatar:()->Unit,onImport:()->Unit,onExport:()->Unit
 ) {
     val accent=readColor(accentHex,Color(0xFFC9B7FF))
     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(horizontal=16.dp)) {
@@ -256,7 +267,7 @@ private fun CustomizationScreen(
                     Divider(color=Color.White.copy(.12f))
                     Text("Upload a wallpaper / background image",color=Color.White.copy(.75f),fontSize=12.sp)
                     OutlinedButton(onClick=onWallpaper,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.Image,null);Spacer(Modifier.width(8.dp));Text("Choose image")}
-                    Text(if(wallpaperPath.isBlank()) "No custom wallpaper" else "Wallpaper: "+File(wallpaperPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
+                    Text(if(wallpaperPath.isBlank()) "No custom wallpaper" else "Wallpaper: "+File(wallpaperPath).name,color=Color.White.copy(.55f),fontSize=11.sp)\n                    OutlinedButton(onClick=onUserAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.AccountCircle,null);Spacer(Modifier.width(8.dp));Text("Upload your avatar")}\n                    Text(if(userAvatarPath.isBlank()) "Default user avatar" else "User avatar: "+File(userAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)\n                    OutlinedButton(onClick=onAssistantAvatar,modifier=Modifier.fillMaxWidth()){Icon(Icons.Default.SmartToy,null);Spacer(Modifier.width(8.dp));Text("Upload assistant avatar")}\n                    Text(if(assistantAvatarPath.isBlank()) "Default assistant avatar" else "Assistant avatar: "+File(assistantAvatarPath).name,color=Color.White.copy(.55f),fontSize=11.sp)
                 }
             }
             item {
