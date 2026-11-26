@@ -157,7 +157,7 @@ fun GlassGPTApp() {
                     }
                     Column(Modifier.weight(1f).fillMaxWidth().clip(RoundedCornerShape(corner.dp))
                         .background(if(glass) Color.White.copy(opacity) else base.copy(.96f))
-                        .border(1.dp,Color.White.copy(if(glass).25f else .08f),RoundedCornerShape(corner.dp)).padding(if(compact) 9.dp else 15.dp)) {
+                        .border(1.dp,Color.White.copy(if(glass) .25f else .08f),RoundedCornerShape(corner.dp)).padding(if(compact) 9.dp else 15.dp)) {
                         Row(verticalAlignment=Alignment.CenterVertically) {
                             Text("CHAT",fontFamily=customFont,color=accent,fontSize=12.sp)
                             Spacer(Modifier.weight(1f)); Text(model,color=Color.White.copy(.55f),fontSize=10.sp)
