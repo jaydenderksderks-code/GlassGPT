@@ -177,7 +177,9 @@ fun GlassGPTApp() {
                         LazyColumn(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(if(compact) 6.dp else 12.dp)) {
                             items(messages) { msg ->
                                 val user=msg.role=="user"
-                                Row(Modifier.fillMaxWidth(),horizontalArrangement=if(user) Arrangement.End else Arrangement.Start) {
+                                Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=if(user) Arrangement.End else Arrangement.Start) {
+                                    val avatar=if(user) userAvatar else assistantAvatar
+                                    if(!user && avatar!=null) Image(avatar,null,Modifier.size(30.dp).clip(CircleShape),contentScale=androidx.compose.ui.layout.ContentScale.Crop)
                                     Column(Modifier.widthIn(max=310.dp).clip(RoundedCornerShape((corner*.72f).dp))
                                         .background(when(bubbleStyle){"Solid"->if(user) accent.copy(.32f) else Color.Black.copy(.22f);"Outline"->Color.Transparent;else->Color.White.copy(if(glass) opacity*.72f else .10f)})
                                         .then(if(bubbleStyle=="Outline") Modifier.border(1.dp,accent.copy(.55f),RoundedCornerShape((corner*.72f).dp)) else Modifier)
@@ -186,6 +188,7 @@ fun GlassGPTApp() {
                                         Spacer(Modifier.height(4.dp))
                                         Text(msg.text,color=Color.White,fontSize=fontSize.sp,lineHeight=(fontSize*1.48f).sp)
                                     }
+                                    if(user && avatar!=null) Image(avatar,null,Modifier.size(30.dp).clip(CircleShape),contentScale=androidx.compose.ui.layout.ContentScale.Crop)
                                 }
                             }
                             if(busy) item { Text("thinking...",fontFamily=customFont,color=accent) }
